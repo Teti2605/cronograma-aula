@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aulas de Hoje</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #191919;
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+    padding: 1.5rem;
+    font-size: 14px;
+  }
+
+  header {
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .day-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .date-sub {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.15rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 0.75rem 0.6rem;
+    border-bottom: 1px solid #2e2e2e;
+  }
+
+  thead th:first-child {
+    width: 110px;
+    padding-left: 0;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #242424;
+    animation: fadeIn 0.3s ease both;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  tbody tr:nth-child(1) { animation-delay: 0.04s; }
+  tbody tr:nth-child(2) { animation-delay: 0.08s; }
+  tbody tr:nth-child(3) { animation-delay: 0.12s; }
+  tbody tr:nth-child(4) { animation-delay: 0.16s; }
+  tbody tr:nth-child(5) { animation-delay: 0.20s; }
+  tbody tr:nth-child(6) { animation-delay: 0.24s; }
+  tbody tr:nth-child(7) { animation-delay: 0.28s; }
+  tbody tr:nth-child(8) { animation-delay: 0.32s; }
+  tbody tr:nth-child(9) { animation-delay: 0.36s; }
+
+  td {
+    padding: 0.6rem 0.75rem;
+    vertical-align: middle;
+  }
+
+  td:first-child {
+    padding-left: 0;
+    font-size: 0.75rem;
+    color: #555;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .subject-cell {
+    color: #d0d0d0;
+    font-size: 0.85rem;
+    font-weight: 400;
+  }
+
+  .bar {
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    border-radius: 2px;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .subject-inner {
+    display: flex;
+    align-items: center;
+  }
+
+  .empty-row td {
+    color: #333;
+    font-size: 0.75rem;
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+  }
+
+  .no-class {
+    text-align: center;
+    color: #444;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="day-title" id="dayTitle">—</div>
+    <div class="date-sub" id="dateSub">—</div>
+  </div>
+</header>
+
+<div id="content"></div>
+
+<script>
+  const slots = [
+    "08:00 - 09:00","09:00 - 10:00","10:00 - 11:00","11:00 - 12:00",
+    "12:00 - 13:00","13:00 - 14:00","14:00 - 15:00","15:00 - 16:00",
+    "16:00 - 17:00","17:00 - 18:00",
+  ];
+
+  const schedule = {
+    1: {
+      "08:00 - 09:00": "Integração Básico-Clínica I",
+      "09:00 - 10:00": "Integração Básico-Clínica I",
+      "10:00 - 11:00": "Habilidades I",
+      "11:00 - 12:00": "Habilidades I",
+      "13:00 - 14:00": "Anatomia aplicada à medicina I",
+      "14:00 - 15:00": "Anatomia aplicada à medicina I",
+      "15:00 - 16:00": "Anatomia aplicada à medicina I",
+      "16:00 - 17:00": "Anatomia aplicada à medicina I",
+    },
+    2: {
+      "08:00 - 09:00": "Anatomia aplicada à medicina I",
+      "09:00 - 10:00": "Anatomia aplicada à medicina I",
+      "10:00 - 11:00": "Anatomia aplicada à medicina I",
+      "11:00 - 12:00": "Anatomia aplicada à medicina I",
+      "13:00 - 14:00": "Anatomia aplicada à medicina I",
+      "14:00 - 15:00": "Anatomia aplicada à medicina I",
+      "15:00 - 16:00": "Anatomia aplicada à medicina I",
+      "16:00 - 17:00": "Anatomia aplicada à medicina I",
+    },
+    3: {
+      "08:00 - 09:00": "Atenção Primária à Saúde",
+      "09:00 - 10:00": "Atenção Primária à Saúde",
+      "10:00 - 11:00": "Saúde e Sociedade",
+      "11:00 - 12:00": "Saúde e Sociedade",
+      "13:00 - 14:00": "Biologia Celular",
+      "14:00 - 15:00": "Biologia Celular",
+      "15:00 - 16:00": "Biologia Celular",
+      "16:00 - 17:00": "Biologia Celular",
+    },
+    4: {
+      "08:00 - 09:00": "Gestão em Saúde",
+      "09:00 - 10:00": "Gestão em Saúde",
+      "10:00 - 11:00": "Gestão em Saúde",
+      "13:00 - 14:00": "Embriologia",
+      "14:00 - 15:00": "Embriologia",
+      "15:00 - 16:00": "Embriologia",
+    },
+    5: {},
+  };
+
+  const subjectColors = {};
+  const palette = ["#7eb8f7","#f7c97e","#a8e6a3","#f7a8d0","#c3a8f7","#f7e4a8","#a8f7f0","#f7a8a8"];
+  let colorIdx = 0;
+  function getColor(subject) {
+    if (!subjectColors[subject]) subjectColors[subject] = palette[colorIdx++ % palette.length];
+    return subjectColors[subject];
+  }
+
+  const dayNames = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"];
+  const monthNames = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+
+  const now = new Date();
+  const weekday = now.getDay();
+  const todaySchedule = schedule[weekday] || {};
+  const hasAny = Object.keys(todaySchedule).length > 0;
+
+  document.getElementById('dayTitle').textContent = dayNames[weekday];
+  const d = now.getDate().toString().padStart(2,'0');
+  document.getElementById('dateSub').textContent = `${d} de ${monthNames[now.getMonth()]} de ${now.getFullYear()}`;
+
+  const content = document.getElementById('content');
+
+  if (!hasAny) {
+    content.innerHTML = '<p class="no-class">Sem aulas hoje 🎉</p>';
+  } else {
+    const table = document.createElement('table');
+    table.innerHTML = `<thead><tr><th>Horário</th><th>Disciplina</th></tr></thead>`;
+    const tbody = document.createElement('tbody');
+
+    slots.forEach(slot => {
+      const subject = todaySchedule[slot];
+      const tr = document.createElement('tr');
+      if (subject) {
+        const color = getColor(subject);
+        tr.innerHTML = `
+          <td>${slot}</td>
+          <td class="subject-cell">
+            <div class="subject-inner">
+              <span class="bar" style="background:${color}"></span>
+              ${subject}
+            </div>
+          </td>`;
+      } else {
+        tr.classList.add('empty-row');
+        tr.innerHTML = `<td>${slot}</td><td style="color:#333">—</td>`;
+      }
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    content.appendChild(table);
+  }
+</script>
+</body>
+</html>
